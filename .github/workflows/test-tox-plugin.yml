@@ -1,0 +1,20 @@
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.9', '3.10','3.11','3.12','3.13' ]
+        tox-version: [ '3.*', '4.*' ]
+    name: Tox ${{ matrix.tox-version }} plugin - Python ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run tox
+        working-directory: tests/tox-plugin
+        run: |
+          python -m pip install "tox==${{ matrix.tox-version }}"
+          python -m tox
