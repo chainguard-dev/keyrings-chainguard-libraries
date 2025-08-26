@@ -28,11 +28,11 @@ jobs:
         VERSION=${GITHUB_REF_NAME#v}
         echo "Updating version to $VERSION"
         
-        # Update version in setup.cfg
-        sed -i "s/^version = .*/version = $VERSION/" setup.cfg
+        # Update version in pyproject.toml
+        sed -i "s/^version = \".*\"/version = \"$VERSION\"/" pyproject.toml
         
         # Show the updated version
-        grep "^version = " setup.cfg
+        grep "^version = " pyproject.toml
 
     - name: 🔬 Execute all unit tests
       run: |
