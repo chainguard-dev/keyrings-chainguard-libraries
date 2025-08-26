@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "keyrings-chainguard-libraries"
+version = "0.1.1"
+description = "Chainctl keyring backend for Python package authentication"
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    {name = "Ajay Kemparaj", email = "ajay.kemparaj@chainguard.dev"},
+]
+requires-python = ">= 3.9"
+dependencies = [
+    "keyring >= 15.1",
+    "pluggy >= 0.12.0",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Archiving :: Packaging",
+]
+
+[project.urls]
+Homepage = "https://github.com/chainguard-dev/keyrings-chainguard-libraries"
+
+[project.optional-dependencies]
+testing = [
+    "pytest >= 6.0",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-timeout",
+]
+dev = [
+    "keyrings-chainguard-libraries[testing]",
+    "black",
+    "flake8",
+    "mypy",
+    "build",
+    "ruff",
+    "twine",
+]
+
+[project.entry-points."keyring.backends"]
+chainctl = "keyrings.chainctl_auth:ChainctlAuth"
+
+[project.entry-points.tox]
+chainctl_bootstrap = "chainctl_auth_tox.bootstrap:plugin"
+
+[tool.hatch.build.targets.wheel]
+packages = ["keyrings", "chainctl_auth_tox"]
