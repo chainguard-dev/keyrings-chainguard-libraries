@@ -36,7 +36,7 @@ jobs:
 
     environment:
       name: testpypi
-      url: https://test.pypi.org/t/keyrings-chainguard-libraries/
+      url: https://test.pypi.org/p/keyrings-chainguard-libraries/
 
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
