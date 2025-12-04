@@ -20,8 +20,12 @@ jobs:
       with:
         python-version: "3.x"
 
-    - uses: chainguard-dev/setup-chainctl@v0
+    - name: Install keyring
+      run: python3 -m pip install .
+
+    - uses: chainguard-dev/setup-chainctl@be0acd273acf04bfdf91f51198327e719f6af978 # v0.4.0
       with:
         identity: TODO
 
-    - run: python3 -m pip install --index-url https://libraries.cgr.dev/python/simple/ virtualenv
+    - name: Use keyring to install private packages
+      run: python3 -m pip install --index-url https://libraries.cgr.dev/python/simple/ ansi
