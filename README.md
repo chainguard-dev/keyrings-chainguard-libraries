@@ -99,6 +99,20 @@ mypy keyrings/
 python -m build
 ```
 
+### Committing
+
+This repo uses [`pre-commit`](https://pre-commit.com/) to run pre-commit hooks.
+
+```bash
+pre-commit install
+```
+
+To run at any time:
+
+```bash
+pre-commit run --all-files
+```
+
 ## Troubleshooting
 
 ### Common Issues

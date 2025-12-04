@@ -27,6 +27,7 @@ test-coverage:
 lint:
 	flake8 keyrings/
 	mypy keyrings/
+	black keyrings/ --diff
 
 format:
 	black keyrings/
