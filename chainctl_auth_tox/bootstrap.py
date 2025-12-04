@@ -8,7 +8,13 @@ repositories hosted on *.cgr.dev domains.
 
 import os
 import logging
-from tox import hookimpl
+
+try:
+    from tox import hookimpl
+except ImportError:
+    # When tox is not installed (e.g., during testing), create a no-op decorator
+    def hookimpl(func):
+        return func
 
 
 logger = logging.getLogger(__name__)
@@ -16,15 +22,7 @@ logger = logging.getLogger(__name__)
 
 @hookimpl
 def tox_configure(config):
-    """Configure tox to use chainctl authentication."""
-    # Ensure CHAINCTL_PARENT is set in the environment
-    parent = os.environ.get("CHAINCTL_PARENT")
-    if not parent:
-        logger.warning(
-            "CHAINCTL_PARENT environment variable not set. "
-            "Chainctl authentication may not work in tox environments."
-        )
-    
+    """Configure tox to use chainctl authentication."""    
     # Log that the plugin is active
     logger.info("Chainctl auth tox plugin activated")
 
@@ -35,10 +33,7 @@ def tox_testenv_install_deps(venv, action):
     Hook called before installing dependencies in a test environment.
     
     Ensures chainctl authentication is available for pip installations.
-    """
-    # Set environment variables for the venv
-    venv.set_env("CHAINCTL_PARENT", os.environ.get("CHAINCTL_PARENT", ""))
-    
+    """    
     # Ensure the keyring backend is available
     result = venv.run_install(
         ["keyrings-chainguard-libraries"],

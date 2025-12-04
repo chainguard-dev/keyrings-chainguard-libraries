@@ -6,43 +6,14 @@ from unittest.mock import Mock, patch
 from chainctl_auth_tox.bootstrap import tox_configure, tox_testenv_install_deps, tox_runtest_pre
 
 
-def test_tox_configure_with_parent():
-    """Test tox_configure when CHAINCTL_PARENT is set."""
-    mock_config = Mock()
-    
-    with patch.dict(os.environ, {"CHAINCTL_PARENT": "test-parent"}):
-        with patch("chainctl_auth_tox.bootstrap.logger") as mock_logger:
-            tox_configure(mock_config)
-            # Should log that plugin is active
-            mock_logger.info.assert_called_with("Chainctl auth tox plugin activated")
-            # Should not warn about missing parent
-            mock_logger.warning.assert_not_called()
-
-
-def test_tox_configure_without_parent():
-    """Test tox_configure when CHAINCTL_PARENT is not set."""
-    mock_config = Mock()
-    
-    with patch.dict(os.environ, {}, clear=True):
-        with patch("chainctl_auth_tox.bootstrap.logger") as mock_logger:
-            tox_configure(mock_config)
-            # Should log that plugin is active
-            mock_logger.info.assert_called_with("Chainctl auth tox plugin activated")
-            # Should warn about missing parent
-            mock_logger.warning.assert_called_once()
-
-
 def test_tox_testenv_install_deps():
     """Test tox_testenv_install_deps hook."""
     mock_venv = Mock()
     mock_action = Mock()
     mock_venv.run_install.return_value = True
     
-    with patch.dict(os.environ, {"CHAINCTL_PARENT": "test-parent"}):
-        result = tox_testenv_install_deps(mock_venv, mock_action)
+    result = tox_testenv_install_deps(mock_venv, mock_action)
     
-    # Should set environment variable
-    mock_venv.set_env.assert_called_with("CHAINCTL_PARENT", "test-parent")
     # Should install the keyring package
     mock_venv.run_install.assert_called_with(
         ["keyrings-chainguard-libraries"],
