@@ -14,6 +14,7 @@ jobs:
     name: CI test with auth
     permissions:
       contents: read
+      id-token: write # Needed to get auth
     runs-on: ubuntu-latest
 
     steps:
