@@ -25,15 +25,6 @@ pip install keyrings-chainguard-libraries
 
 - Python 3.7 or higher
 - `chainctl` CLI tool installed and configured
-- `CHAINCTL_PARENT` environment variable set to your organization's parent resource
-
-## Configuration
-
-Set the required environment variable:
-
-```bash
-export CHAINCTL_PARENT="your-organization-parent-id"
-```
 
 ## Usage
 
@@ -70,10 +61,9 @@ password = keyring.get_password("https://libraries.cgr.dev", "username")
 The `ChainctlAuth` backend:
 
 1. Intercepts credential requests for HTTPS services ending with `.cgr.dev`
-2. Executes `chainctl auth pull-token --library-ecosystem=python --parent=$CHAINCTL_PARENT --ttl=8h`
-3. Parses the username and password from the command output
-4. Caches the credentials for the service
-5. Returns the credentials to the requesting application
+2. Executes `chainctl auth token --audience=libraries.cgr.dev`
+3. Caches the token for the service
+5. Returns the token to the requesting application
 
 ## Development
 
@@ -113,15 +103,12 @@ python -m build
 
 ### Common Issues
 
-1. **"CHAINCTL_PARENT environment variable not set"**
-   - Set the `CHAINCTL_PARENT` environment variable to your organization's parent ID
-
-2. **"chainctl command not found"**
+1. **"chainctl command not found"**
    - Ensure `chainctl` is installed and available in your PATH
 
-3. **Authentication failures**
+2. **Authentication failures**
    - Verify `chainctl` is properly configured and authenticated
-   - Check that your organization has access to the target repository
+   - Check that your organization has access to Chainguard Libraries
 
 ### Debug Logging
 

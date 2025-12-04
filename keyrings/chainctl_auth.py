@@ -5,8 +5,6 @@ This module provides a keyring backend that authenticates to internal PyPI
 repositories using chainctl pull tokens.
 """
 
-import os
-import json
 import logging
 import subprocess
 from urllib.parse import urlparse
@@ -40,46 +38,38 @@ class ChainctlAuth(backend.KeyringBackend):
         return True
 
     def get_password(self, service, username):
-        """Get password (pull token) for the given service."""
+        """Get password (auth token) for the given service."""
         if not self._is_cgr_dev_service(service):
             return None
 
         # Check cache first
         if service in self._credentials_cache:
-            cached_creds = self._credentials_cache[service]
-            # Return the password part of the credentials
-            return cached_creds[1]
-
-        # Get parent from environment variable
-        parent = os.environ.get("CHAINCTL_PARENT", "")
-        if not parent:
-            self._logger.warning("CHAINCTL_PARENT environment variable not set")
-            return None
+            cached_token = self._credentials_cache[service]
+            # Return the cached token
+            return cached_token
 
         try:
-            # Fetch pull token using chainctl (returns username, password tuple)
-            credentials = self._get_chainctl_token(parent)
-            if credentials:
-                # Cache the credentials
-                self._credentials_cache[service] = credentials
-                # Return just the password
-                return credentials[1]
+            # Fetch auth token using chainctl
+            token = self._get_chainctl_token()
+            if token:
+                # Cache the token
+                self._credentials_cache[service] = token
+                # Return the token
+                return token
         except Exception as e:
             self._logger.error(f"Failed to get chainctl pull token: {e}")
 
         return None
 
-    def _get_chainctl_token(self, parent):
-        """Execute chainctl command to get pull token."""
+    def _get_chainctl_token(self):
+        """Execute chainctl command to get auth token."""
         try:
             # Build the chainctl command
             cmd = [
                 "chainctl",
                 "auth",
-                "pull-token",
-                "--library-ecosystem=python",
-                f"--parent={parent}",
-                "--ttl=8h",
+                "token",
+                "--audience=libraries.cgr.dev",
             ]
 
             self._logger.debug(f"Executing: {' '.join(cmd)}")
@@ -94,37 +84,27 @@ class ChainctlAuth(backend.KeyringBackend):
                 timeout=30,  # 30 second timeout
             )
 
-            # Parse the output to extract username and password
+            # Parse the output to extract token
             output_lines = result.stdout.strip().split("\n")
-            username = None
-            password = None
-
-            for i, line in enumerate(output_lines):
-                if line.startswith("Username:"):
-                    username = line.split(":", 1)[1].strip()
-                elif line.startswith("Password:"):
-                    password = line.split(":", 1)[1].strip()
-
-            if not username or not password:
-                self._logger.error(f"Failed to parse chainctl output:\n{result.stdout}")
-                raise Exception(
-                    "Unable to parse username and password from chainctl output"
-                )
-
-            # Return the credentials as a tuple
-            return (username, password)
+            # The token is in the first line
+            token = output_lines[0]
+            return token
 
         except subprocess.CalledProcessError as e:
             self._logger.error(f"chainctl command failed: {e.stderr}")
-            raise Exception(
-                f"chainctl command exited with status {e.returncode}: {e.stderr}"
+            msg = (
+                f"chainctl command exited with status "
+                f"{e.returncode}: {e.stderr}"
             )
+            raise Exception(msg)
         except subprocess.TimeoutExpired:
             raise Exception("chainctl command timed out")
         except FileNotFoundError:
-            raise Exception(
-                "chainctl command not found. Please ensure chainctl is installed and in PATH"
+            msg = (
+                "chainctl command not found. "
+                "Please ensure chainctl is installed and in PATH"
             )
+            raise Exception(msg)
 
     def set_password(self, service, username, password):
         """Setting passwords is not supported."""
@@ -145,14 +125,14 @@ class ChainctlAuth(backend.KeyringBackend):
 
         # Check cache for credentials
         if service in self._credentials_cache:
-            cached_creds = self._credentials_cache[service]
+            cached_token = self._credentials_cache[service]
             # Return credentials with the username from chainctl
-            return credentials.SimpleCredential(cached_creds[0], cached_creds[1])
+            return credentials.SimpleCredential("_token", cached_token)
 
         # If not cached, fetch via get_password (which will cache it)
         password = self.get_password(service, username)
         if password and service in self._credentials_cache:
-            cached_creds = self._credentials_cache[service]
-            return credentials.SimpleCredential(cached_creds[0], cached_creds[1])
+            cached_token = self._credentials_cache[service]
+            return credentials.SimpleCredential("_token", cached_token)
 
         return None
