@@ -12,6 +12,8 @@ on:
 jobs:
   auth:
     name: CI test with auth
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
 
     steps:
