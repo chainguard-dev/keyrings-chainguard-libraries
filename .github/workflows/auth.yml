@@ -9,6 +9,8 @@ on:
       - main
       - ci-auth
 
+permissions: {}
+
 jobs:
   auth:
     name: CI test with auth
@@ -16,6 +18,10 @@ jobs:
       contents: read
       id-token: write # Needed to get auth
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
     - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -28,7 +34,7 @@ jobs:
 
     - uses: chainguard-dev/setup-chainctl@be0acd273acf04bfdf91f51198327e719f6af978 # v0.4.0
       with:
-        identity: TODO
+        identity: ce2d1984a010471142503340d670612d63ffb9f6/04af60cc28fb08b7
 
     - name: Use keyring to install private packages
       run: python3 -m pip install --index-url https://libraries.cgr.dev/python/simple/ ansi
