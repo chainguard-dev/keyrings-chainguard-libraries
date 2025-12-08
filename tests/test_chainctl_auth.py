@@ -1,6 +1,5 @@
 """Tests for the chainctl keyring backend."""
 
-import os
 import subprocess
 from unittest.mock import Mock, patch
 
@@ -28,7 +27,10 @@ class TestChainctlAuth:
         # Valid cgr.dev URLs
         assert self.backend._is_cgr_dev_service("https://libraries.cgr.dev") is True
         assert self.backend._is_cgr_dev_service("https://foo.cgr.dev/path") is True
-        assert self.backend._is_cgr_dev_service("https://subdomain.libraries.cgr.dev") is True
+        assert (
+            self.backend._is_cgr_dev_service("https://subdomain.libraries.cgr.dev")
+            is True
+        )
 
         # Invalid URLs
         assert self.backend._is_cgr_dev_service("http://libraries.cgr.dev") is False
@@ -47,7 +49,10 @@ class TestChainctlAuth:
         # Mock subprocess output
         mock_run.return_value = Mock(
             stdout="token\n",
-            stderr="Opening browser to https://issuer.enforce.dev/oauth?audience=libraries.cgr.dev\n",
+            stderr=(
+                "Opening browser to "
+                "https://issuer.enforce.dev/oauth?audience=libraries.cgr.dev\n"
+            ),
             returncode=0,
         )
 
@@ -68,7 +73,10 @@ class TestChainctlAuth:
         """Test that credentials are cached after first retrieval."""
         mock_run.return_value = Mock(
             stdout="token\n",
-            stderr="Opening browser to https://issuer.enforce.dev/oauth?audience=libraries.cgr.dev\n",
+            stderr=(
+                "Opening browser to "
+                "https://issuer.enforce.dev/oauth?audience=libraries.cgr.dev\n"
+            ),
             returncode=0,
         )
 
@@ -108,7 +116,10 @@ class TestChainctlAuth:
         """Test handling of empty chainctl output."""
         mock_run.return_value = Mock(
             stdout="",
-            stderr="Opening browser to https://issuer.enforce.dev/oauth?audience=libraries.cgr.dev\n",
+            stderr=(
+                "Opening browser to "
+                "https://issuer.enforce.dev/oauth?audience=libraries.cgr.dev\n"
+            ),
             returncode=0,
         )
 
@@ -131,7 +142,10 @@ class TestChainctlAuth:
         """Test successful credential retrieval."""
         mock_run.return_value = Mock(
             stdout="token\n",
-            stderr="Opening browser to https://issuer.enforce.dev/oauth?audience=libraries.cgr.dev\n",
+            stderr=(
+                "Opening browser to "
+                "https://issuer.enforce.dev/oauth?audience=libraries.cgr.dev\n"
+            ),
             returncode=0,
         )
 

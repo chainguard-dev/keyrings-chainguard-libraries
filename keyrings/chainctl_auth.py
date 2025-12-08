@@ -70,7 +70,9 @@ class ChainctlAuth(backend.KeyringBackend):
 
         return True
 
-    def get_password(self, service: str, username: str) -> Optional[str]:
+    def get_password(  # type: ignore[override]
+        self, service: str, username: str
+    ) -> Optional[str]:
         """Get password (auth token) for the given service.
 
         Args:
@@ -91,6 +93,7 @@ class ChainctlAuth(backend.KeyringBackend):
             if token:
                 self._credentials_cache[service] = token
                 return token
+            return None
         except ChainctlAuthError as e:
             self._logger.error(f"Failed to get chainctl pull token: {e}")
             return None
@@ -134,10 +137,7 @@ class ChainctlAuth(backend.KeyringBackend):
 
         except subprocess.CalledProcessError as e:
             self._logger.error(f"chainctl command failed: {e.stderr}")
-            msg = (
-                f"chainctl command exited with status "
-                f"{e.returncode}: {e.stderr}"
-            )
+            msg = f"chainctl command exited with status " f"{e.returncode}: {e.stderr}"
             raise ChainctlCommandError(msg) from e
         except subprocess.TimeoutExpired as e:
             raise ChainctlTimeoutError(
@@ -179,7 +179,7 @@ class ChainctlAuth(backend.KeyringBackend):
             "Deleting passwords is not supported for chainctl auth"
         )
 
-    def get_credential(
+    def get_credential(  # type: ignore[override]
         self, service: str, username: str
     ) -> Optional[credentials.SimpleCredential]:
         """Get credential object for the service.

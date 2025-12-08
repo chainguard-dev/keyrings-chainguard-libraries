@@ -6,7 +6,6 @@ with tox, particularly useful for testing packages that depend on private
 repositories hosted on *.cgr.dev domains.
 """
 
-import os
 import logging
 
 try:
@@ -22,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @hookimpl
 def tox_configure(config):
-    """Configure tox to use chainctl authentication."""    
+    """Configure tox to use chainctl authentication."""
     # Log that the plugin is active
     logger.info("Chainctl auth tox plugin activated")
 
@@ -31,18 +30,18 @@ def tox_configure(config):
 def tox_testenv_install_deps(venv, action):
     """
     Hook called before installing dependencies in a test environment.
-    
+
     Ensures chainctl authentication is available for pip installations.
-    """    
+    """
     # Ensure the keyring backend is available
     result = venv.run_install(
         ["keyrings-chainguard-libraries"],
         action=action,
     )
-    
+
     if result:
         action.setactivity("chainctl-auth", "Installed chainctl keyring backend")
-    
+
     return result
 
 
@@ -50,7 +49,7 @@ def tox_testenv_install_deps(venv, action):
 def tox_runtest_pre(venv):
     """
     Hook called before running tests.
-    
+
     Verifies that chainctl is available and properly configured.
     """
     # Check if chainctl is available
