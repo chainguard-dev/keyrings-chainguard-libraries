@@ -31,7 +31,7 @@ pip install keyrings-chainguard-libraries
 Once installed, the keyring backend will automatically activate for HTTPS URLs ending with `.cgr.dev`. When pip or other tools request credentials for a private repository on a `*.cgr.dev` domain, the backend will:
 
 1. Check if credentials are cached
-2. If not cached, run `chainctl auth pull-token` to generate new credentials
+2. If not cached, run `chainctl auth token` to generate new short-lived credentials and cache them
 3. Return the credentials to the requesting tool
 
 ### Example with pip
