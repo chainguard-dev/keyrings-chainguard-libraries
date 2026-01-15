@@ -1,19 +1,19 @@
 # keyrings-chainguard-libraries
 
-Keyring backend for Chainguard Python Libraries
+Keyring backend for [Chainguard Libraries for Python](https://edu.chainguard.dev/chainguard/libraries/python/overview/)
 
-A Python keyring backend that provides seamless authentication to internal PyPI repositories using Chainguard's `chainctl` pull tokens.
+A Python keyring backend that provides seamless authentication to the Chainguard Libraries for Python repositories at [https://libraries.cgr.dev/python and other contexts](https://edu.chainguard.dev/chainguard/libraries/python/overview/#technical-details) using Chainguard pull tokens.
 
 ## Overview
 
-This package extends Python's keyring library to automatically authenticate with private package repositories using `chainctl` pull tokens. When pip or other Python package managers request credentials for HTTPS repositories ending with `.cgr.dev`, this backend generates short-lived authentication tokens using the `chainctl` CLI tool.
+This package extends Python's keyring library to automatically authenticate with private package repositories using Chainguard pull tokens. When pip or other Python package managers request credentials for HTTPS repositories ending with `.cgr.dev`, this backend generates short-lived authentication tokens using the `chainctl` CLI tool.
 
 ## Features
 
-- **Automatic Authentication**: Seamlessly integrates with pip, poetry, and other Python package managers
-- **Token Caching**: Caches credentials to minimize repeated `chainctl` calls
-- **Secure Token Generation**: Uses `chainctl` to generate short-lived (8-hour) pull tokens
-- **Tox Integration**: Includes a tox plugin for authentication in test environments
+- **Automatic authentication**: Seamlessly integrates with pip, uv, and other Python package managers
+- **Token caching**: Caches credentials to minimize repeated `chainctl` calls
+- **Secure token generation**: Uses `chainctl` to generate short-lived (8-hour) pull tokens when needed
+- **Tox integration**: Includes a tox plugin for authentication in test environments
 
 ## Installation
 
@@ -24,15 +24,17 @@ pip install keyrings-chainguard-libraries
 ## Prerequisites
 
 - Python 3.9 or higher
-- `chainctl` CLI tool installed and configured
+- [`chainctl` CLI tool](https://edu.chainguard.dev/chainguard/chainctl-usage/) installed and configured
 
 ## Usage
 
-Once installed, the keyring backend will automatically activate for HTTPS URLs ending with `.cgr.dev`. When pip or other tools request credentials for a private repository on a `*.cgr.dev` domain, the backend will:
+Once installed, the keyring backend automatically activates for HTTPS URLs ending with `.cgr.dev`. When pip or other tools request credentials for a private repository on a `*.cgr.dev` domain, the backend performs the following steps:
 
 1. Check if credentials are cached
 2. If not cached, run `chainctl auth token` to generate new short-lived credentials and cache them
 3. Return the credentials to the requesting tool
+
+Refer to the [Chainguard documentation for more details](https://edu.chainguard.dev/chainguard/libraries/access/#python-keyring-provider).
 
 ### Example with pip
 
@@ -41,7 +43,7 @@ Once installed, the keyring backend will automatically activate for HTTPS URLs e
 pip install package-name --index-url https://libraries.cgr.dev/python/simple/
 ```
 
-### Manual Testing
+### Manual testing
 
 You can test the keyring backend directly:
 
@@ -56,7 +58,7 @@ keyring.set_keyring(ChainctlAuth())
 password = keyring.get_password("https://libraries.cgr.dev", "username")
 ```
 
-## How It Works
+## How it works
 
 The `ChainctlAuth` backend:
 
@@ -67,7 +69,7 @@ The `ChainctlAuth` backend:
 
 ## Development
 
-### Setup Development Environment
+### Setup development environment
 
 ```bash
 # Clone the repository
@@ -78,7 +80,7 @@ cd keyrings-chainguard-libraries
 pip install -e ".[dev]"
 ```
 
-### Running Tests
+### Running tests
 
 ```bash
 # Run tests
@@ -115,7 +117,7 @@ pre-commit run --all-files
 
 ## Troubleshooting
 
-### Common Issues
+### Common issues
 
 1. **"chainctl command not found"**
    - Ensure `chainctl` is installed and available in your PATH
@@ -124,7 +126,7 @@ pre-commit run --all-files
    - Verify `chainctl` is properly configured and authenticated
    - Check that your organization has access to Chainguard Libraries
 
-### Debug Logging
+### Debug logging
 
 Enable debug logging to troubleshoot issues:
 
@@ -133,7 +135,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 ```
 
-## Security Considerations
+## Security considerations
 
 - Credentials are cached in memory only for the duration of the process
 - Pull tokens are generated with an 8-hour TTL
@@ -151,10 +153,13 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+5. Open a pull request
 
 ## Support
 
 For issues and questions:
+
 - Open an issue on the [GitHub repository](https://github.com/chainguard-dev/keyrings-chainguard-libraries)
 - Contact the maintainers
+
+Alternatively as Chainguard customer, contact your account representative or our support team.
