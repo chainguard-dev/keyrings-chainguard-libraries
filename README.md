@@ -17,9 +17,17 @@ This package extends Python's keyring library to automatically authenticate with
 
 ## Installation
 
+### Pip
 ```bash
 pip install keyrings-chainguard-libraries
 ```
+
+### uv
+```bash
+uv pip install keyrings-chainguard-libraries
+```
+
+If you're installing for the first time, and your package manager's config is already pointing to the private Chainguard repositories, make sure to add `--index https://pypi.org/simple` to ensure you're pulling from PyPI and avoiding a chicken/egg problem.
 
 ## Prerequisites
 
@@ -36,11 +44,35 @@ Once installed, the keyring backend automatically activates for HTTPS URLs endin
 
 Refer to the [Chainguard documentation for more details](https://edu.chainguard.dev/chainguard/libraries/access/#python-keyring-provider).
 
+### Enable keyring in uv
+
+By default, the keyring-provider setting in uv is disabled.  To enable it, update either your global uv.toml file or your project-specific pyproject.toml:
+
+pyproject.toml
+```toml
+[tool.uv]
+keyring-provider = "subprocess"
+```
+
+uv.toml
+```toml
+keyring-provider = "subprocess"
+```
+
+More information can be found [here](https://docs.astral.sh/uv/reference/settings/#keyring-provider)
+
 ### Example with pip
 
 ```bash
 # Install from a private Chainguard repository
 pip install package-name --index-url https://libraries.cgr.dev/python/simple/
+```
+
+### Example with uv
+
+```bash
+# Install from a private Chainguard repository
+uv pip install package-name --index-url https://libraries.cgr.dev/python/simple/
 ```
 
 ### Manual testing
