@@ -34,7 +34,7 @@ If you're installing for the first time, and your package manager's config is al
 - Python 3.9 or higher
 - [`chainctl` CLI tool](https://edu.chainguard.dev/chainguard/chainctl-usage/) installed and configured
 
-## General usage
+## Usage
 
 Once installed, the keyring backend automatically activates for HTTPS URLs ending with `.cgr.dev`. When pip or other tools request credentials for a private repository on a `*.cgr.dev` domain, the backend performs the following steps:
 
