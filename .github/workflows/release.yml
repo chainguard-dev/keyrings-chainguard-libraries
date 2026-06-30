@@ -41,7 +41,7 @@ jobs:
 
     - name: 🔬 Execute all unit tests
       run: |
-        python3 -m pip install -e .[testing]
+        python3 -m pip install -e ".[testing]"
         python3 -m pytest tests/test_chainctl_auth.py -v
 
     - name: 🛠️ Build package and source distribution
